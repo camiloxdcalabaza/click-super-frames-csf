@@ -1,5 +1,5 @@
 {
-  "geode": "v4.8.0",
+  "geode": "v4.0.0",
   "gd": {
     "win": "2.2074",
     "android": "2.2074",
@@ -9,9 +9,16 @@
   "id": "camiloxdcalabaza.click-super-frames-optimizer",
   "name": "Click Super Frames Optimizer (meme) (real)",
   "version": "v1.0.0",
-  "description": "Replacement for CBF - Real dt scaling, 3 clicks from 2 physical - Patata 120 / Normal 240-360 / Cheta 480",
-  "developers": ["camiloxdcalabaza"],
-  "tags": ["performance", "gameplay"],
+  "description": "Replacement for Click Between Frames. Real dt scaling, inputs mas que ilimitados (3 logical from 2 physical), draw divide. Patata 120 / Normal 240-360 / Cheta 480. PC & Mobile. 2.2081 & 2.2091 ready.",
+  "developers": [
+    "camiloxdcalabaza"
+  ],
+  "tags": [
+    "performance",
+    "gameplay",
+    "input",
+    "offline"
+  ],
   "dependencies": [
     {
       "id": "geode.node-ids",
@@ -20,8 +27,20 @@
     }
   ],
   "keybinds": [
-    {"id": "csf-075", "key": "F1", "mods": []},
-    {"id": "csf-10", "key": "F2", "mods": []},
-    {"id": "csf-125", "key": "F3", "mods": []}
+    {
+      "id": "csf-075",
+      "key": "F1",
+      "mods": []
+    },
+    {
+      "id": "csf-10",
+      "key": "F2",
+      "mods": []
+    },
+    {
+      "id": "csf-125",
+      "key": "F3",
+      "mods": []
+    }
   ]
 }
