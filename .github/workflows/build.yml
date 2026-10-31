@@ -1,9 +1,9 @@
 name: Build Geode Mod
 
 on:
-  push:
-  pull_request:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   build:
@@ -12,41 +12,35 @@ jobs:
       matrix:
         config:
           - name: Windows
-            os: windows-latest
-          - name: Android64
-            os: ubuntu-latest
-            target: Android64
+            platform: win
           - name: Android32
-            os: ubuntu-latest
-            target: Android32
+            platform: android32
+          - name: Android64
+            platform: android64
           - name: macOS
-            os: macos-latest
+            platform: mac
           - name: iOS
-            os: macos-latest
-            target: iOS
+            platform: ios
 
     name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.platform == 'win' && 'windows-latest' || matrix.config.platform == 'ios' && 'macos-latest' || matrix.config.platform == 'mac' && 'macos-latest' || 'ubuntu-latest' }}
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build Geode Mod
-        uses: geode-sdk/build-geode-mod@main
+      - uses: geode-sdk/build-geode-mod@main
         with:
           combine: true
-          target: ${{ matrix.config.target }}
+          target: ${{ matrix.config.platform }}
 
   package:
-    name: Package
     runs-on: ubuntu-latest
     needs: build
-
+    name: Package
     steps:
+      - uses: actions/checkout@v4
       - uses: geode-sdk/build-geode-mod/combine@main
         id: build
-
       - uses: actions/upload-artifact@v4
         with:
-          name: Build Output
+          name: geode-package
           path: ${{ steps.build.outputs.build-output }}
