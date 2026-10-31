@@ -1,7 +1,6 @@
 // ============================================================================
 // CLICK SUPER FRAMES OPTIMIZER (MEME) (REAL) - FIXEADO PARA FEATURED
-// GEODE v5.11.2 - GD 2.2081 TESTEABLE - GD 2.2091 READY - PC Y MOVIL
-// 240fps REAL - FIX 144/165hz - INPUTS MAS QUE ILIMITADOS - F1 F2 F3
+// GEODE 4.8.0 - GD 2.2074 - PC Y MOVIL - F1 F2 F3
 // ============================================================================
 #ifdef GEODE_IS_WINDOWS
 #define NOMINMAX
@@ -15,7 +14,7 @@
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
-#include <Geode/binding/Keybinds.hpp>
+#include <Geode/loader/Dispatch.hpp>
 #include <atomic>
 #include <chrono>
 #include <algorithm>
@@ -97,7 +96,7 @@ public:
         if(auto old = this->getChildByID("csf-speed-menu"_spr)) old->removeFromParent();
         CCMenu* myMenu = CCMenu::create();
         myMenu->setID("csf-speed-menu"_spr);
-        myMenu->setLayout(RowLayout::create()->setGap(20.f)->setAutoScale(false)->setAxisAlignment(AxisAlignment::Center));
+        myMenu->setLayout(RowLayout::create()->setGap(20.f)->setAxisAlignment(AxisAlignment::Center));
         float cur = csf::getSpeed();
         auto b1 = CCMenuItemSpriteExtra::create(CCLabelBMFont::create("0.75x", std::fabs(cur-csf::kSpeed75)<0.01f ? "goldFont.fnt" : "bigFont.fnt"), this, menu_selector(CSF_PauseLayer::onSpeed075));
         b1->setID("csf-075"_spr);
@@ -125,9 +124,9 @@ public:
 $on_mod(Loaded){
     log::info("CSF CLICK SUPER FRAMES OPTIMIZER (MEME) (REAL) CARGADO - FIXEADO PARA FEATURED");
 #ifdef GEODE_IS_WINDOWS
-    new EventListener([](InvokeBindEvent* e){
+    (void)new EventListener(EventFilter<InvokeBindEvent>([=](InvokeBindEvent* e){
         if(!e->isDown()) return ListenerResult::Propagate;
-        auto id = e->bind()->getId();
+        auto id = e->getBind()->getId();
         if(id == "csf-075"_spr) csf::setSpeed(csf::kSpeed75);
         else if(id == "csf-10"_spr) csf::setSpeed(csf::kSpeed100);
         else if(id == "csf-125"_spr) csf::setSpeed(csf::kSpeed125);
@@ -135,6 +134,6 @@ $on_mod(Loaded){
         std::string txt = fmt::format("CSF {}", csf::getSpeed());
         Notification::create(txt.c_str(), NotificationIcon::Info, 0.5f)->show();
         return ListenerResult::Propagate;
-    }, InvokeBindFilter());
+    }), InvokeBindFilter());
 #endif
 }
