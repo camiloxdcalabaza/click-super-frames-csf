@@ -1,46 +1,34 @@
 name: Build Geode Mod
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-
+on: [push, workflow_dispatch]
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
         config:
-          - name: Windows
-            platform: win
-          - name: Android32
-            platform: android32
-          - name: Android64
-            platform: android64
-          - name: macOS
-            platform: mac
-          - name: iOS
-            platform: ios
-
+        - { name: Windows, os: windows-latest, platform: Win64 }
+        - { name: Android32, os: ubuntu-latest, platform: Android32 }
+        - { name: Android64, os: ubuntu-latest, platform: Android64 }
+        - { name: macOS, os: macos-latest, platform: MacOS }
+        - { name: iOS, os: macos-latest, platform: iOS }
     name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.platform == 'win' && 'windows-latest' || matrix.config.platform == 'ios' && 'macos-latest' || matrix.config.platform == 'mac' && 'macos-latest' || 'ubuntu-latest' }}
-
+    runs-on: ${{ matrix.config.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: geode-sdk/build-geode-mod@main
-        with:
-          combine: true
-          target: ${{ matrix.config.platform }}
-
-  package:
-    runs-on: ubuntu-latest
-    needs: build
-    name: Package
-    steps:
-      - uses: actions/checkout@v4
-      - uses: geode-sdk/build-geode-mod/combine@main
-        id: build
+      - uses: geode-sdk/cli@v2
+      - run: geode build --platform ${{ matrix.config.platform }} --config Release
       - uses: actions/upload-artifact@v4
         with:
-          name: geode-package
-          path: ${{ steps.build.outputs.build-output }}
+          name: ${{ matrix.config.platform }}
+          path: build/*.geode
+  combine:
+    name: Combine
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: combined, merge-multiple: true }
+      - uses: geode-sdk/combine@v1
+        with: { out: click-super-frames-csf.geode }
+      - uses: actions/upload-artifact@v4
+        with: { name: Build Output, path: click-super-frames-csf.geode }
