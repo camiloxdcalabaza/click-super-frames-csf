@@ -3,6 +3,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
+# FIX para el error incomplete type GameManager / GJGameLevel
+set(GEODE_DISABLE_PRECOMPILED_HEADERS ON)
+set(CMAKE_UNITY_BUILD OFF)
+
 project(ClickSuperFramesOptimizer VERSION 1.0.0)
 
 add_library(${PROJECT_NAME} SHARED
