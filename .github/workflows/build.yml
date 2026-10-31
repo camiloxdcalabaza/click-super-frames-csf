@@ -1,1 +1,42 @@
+name: Build
 
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: Windows
+            os: windows-latest
+          - name: macOS
+            os: macos-latest
+          - name: Android 64-bit
+            os: ubuntu-latest
+
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Geode CLI
+        uses: geode-sdk/setup-cli@v1
+
+      - name: Set up Geode SDK
+        uses: geode-sdk/setup-sdk@v1
+
+      - name: Build the mod
+        run: geode build --platform ${{ matrix.config.name == 'Windows' && 'win' || matrix.config.name == 'macOS' && 'mac' || 'android64' }} -o build/mod.geode
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.config.name }} Build
+          path: build/mod.geode
