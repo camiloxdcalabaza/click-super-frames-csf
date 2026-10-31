@@ -1,5 +1,5 @@
 {
-  "geode": ">=v4.0.0",
+  "geode": "v4.8.0",
   "gd": {
     "win": "2.2074",
     "android": "2.2074",
@@ -9,6 +9,19 @@
   "id": "camiloxdcalabaza.click-super-frames-optimizer",
   "name": "Click Super Frames Optimizer (meme) (real)",
   "version": "v1.0.0",
-  "description": "Replacement for 【entity-CBF¦canonical_name=CBF】",
-  "developers": ["camiloxdcalabaza"]
+  "description": "Replacement for CBF",
+  "developers": ["camiloxdcalabaza"],
+  "tags": ["performance", "gameplay"],
+  "dependencies": [
+    {
+      "id": "geode.node-ids",
+      "version": ">=1.13.0",
+      "importance": "required"
+    }
+  ],
+  "keybinds": [
+    {"id": "csf-075", "key": "F1", "mods": []},
+    {"id": "csf-10", "key": "F2", "mods": []},
+    {"id": "csf-125", "key": "F3", "mods": []}
+  ]
 }
