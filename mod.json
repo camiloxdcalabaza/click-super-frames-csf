@@ -1,0 +1,42 @@
+{
+  "geode": "v5.11.2",
+  "gd": {
+    "android": "2.2074",
+    "win": "2.2074",
+    "mac": "2.2074",
+    "ios": "2.2074"
+  },
+  "id": "camiloxdcalabaza.click-super-frames-optimizer",
+  "name": "Click Super Frames Optimizer (meme) (real)",
+  "version": "v1.0.0",
+  "description": "Replacement for Click Between Frames. Real dt scaling, inputs mas que ilimitados (3 logical from 2 physical), draw divide. Patata 120 / Normal 240-360 / Cheta 480. PC & Mobile. 2.2081 & 2.2091 ready.",
+  "developers": ["camiloxdcalabaza"],
+  "tags": ["performance", "gameplay", "input", "offline"],
+  "dependencies": [
+    {
+      "id": "geode.node-ids",
+      "version": ">=1.13.0",
+      "importance": "required"
+    }
+  ],
+  "keybinds": [
+    {
+      "id": "csf-075",
+      "name": "CSF Patata 0.75x - 120 FPS",
+      "default": "F1"
+    },
+    {
+      "id": "csf-10",
+      "name": "CSF Normal 1.0x - 240/360 FPS",
+      "default": "F2"
+    },
+    {
+      "id": "csf-125",
+      "name": "CSF Cheta 1.25x - 480 FPS",
+      "default": "F3"
+    }
+  ],
+  "resources": {
+    "files": []
+  }
+}
