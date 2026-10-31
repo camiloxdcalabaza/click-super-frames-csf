@@ -3,23 +3,24 @@
 // GEODE v5.11.2 - GD 2.2081 TESTEABLE - GD 2.2091 READY - PC Y MOVIL
 // 240fps REAL - FIX 144/165hz - INPUTS MAS QUE ILIMITADOS - F1 F2 F3
 // ============================================================================
-#ifdef GEODE_IS_WINDOWS
-#define NOMINMAX
-#define WIN32_LEAN_AND_MEAN
-#define NOGDI
-#include <windows.h>
-#endif
 #include <Geode/Geode.hpp>
 #include <Geode/modify/CCScheduler.hpp>
 #include <Geode/modify/GJBaseGameLayer.hpp>
 #include <Geode/modify/LevelEditorLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/modify/PlayLayer.hpp>
-#include <Geode/binding/Keybinds.hpp>
+#include <Geode/loader/Dispatch.hpp>
+#include <Geode/ui/Layout.hpp>
 #include <atomic>
 #include <chrono>
 #include <algorithm>
 #include <cmath>
+#ifdef GEODE_IS_WINDOWS
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
+#define NOGDI
+#include <windows.h>
+#endif
 using namespace geode::prelude;
 
 namespace csf {
@@ -89,15 +90,23 @@ public:
 
 class $modify(CSF_PauseLayer, PauseLayer){
 public:
-    void customSetup(){
-        PauseLayer::customSetup();
-        createSpeedMenu();
+    void onSpeed075(CCObject*){ csf::setSpeed(csf::kSpeed75); showNotif("CSF 0.75x - Patata 120"); createSpeedMenu(); }
+    void onSpeed10(CCObject*){ csf::setSpeed(csf::kSpeed100); showNotif("CSF 1.0x - Normal 240/360"); createSpeedMenu(); }
+    void onSpeed125(CCObject*){ csf::setSpeed(csf::kSpeed125); showNotif("CSF 1.25x - Cheta 480"); createSpeedMenu(); }
+
+    void showNotif(const char* text){
+        static auto last = std::chrono::steady_clock::now();
+        auto now = std::chrono::steady_clock::now();
+        if(std::chrono::duration_cast<std::chrono::milliseconds>(now-last).count() < 500) return;
+        last = now;
+        Notification::create(text, NotificationIcon::Info, 0.8f)->show();
     }
+
     void createSpeedMenu(){
         if(auto old = this->getChildByID("csf-speed-menu"_spr)) old->removeFromParent();
         CCMenu* myMenu = CCMenu::create();
         myMenu->setID("csf-speed-menu"_spr);
-        myMenu->setLayout(RowLayout::create()->setGap(20.f)->setAutoScale(false)->setAxisAlignment(AxisAlignment::Center));
+        myMenu->setLayout(RowLayout::create()->setGap(20.f)->setAxisAlignment(AxisAlignment::Center));
         float cur = csf::getSpeed();
         auto b1 = CCMenuItemSpriteExtra::create(CCLabelBMFont::create("0.75x", std::fabs(cur-csf::kSpeed75)<0.01f ? "goldFont.fnt" : "bigFont.fnt"), this, menu_selector(CSF_PauseLayer::onSpeed075));
         b1->setID("csf-075"_spr);
@@ -110,24 +119,19 @@ public:
         myMenu->setPosition({CCDirector::get()->getWinSize().width/2, 80});
         this->addChild(myMenu);
     }
-    void onSpeed075(CCObject*){ csf::setSpeed(csf::kSpeed75); showNotif("CSF 0.75x - Patata 120"); createSpeedMenu(); }
-    void onSpeed10(CCObject*){ csf::setSpeed(csf::kSpeed100); showNotif("CSF 1.0x - Normal 240/360"); createSpeedMenu(); }
-    void onSpeed125(CCObject*){ csf::setSpeed(csf::kSpeed125); showNotif("CSF 1.25x - Cheta 480"); createSpeedMenu(); }
-    void showNotif(const char* text){
-        static auto last = std::chrono::steady_clock::now();
-        auto now = std::chrono::steady_clock::now();
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(now-last).count() < 500) return;
-        last = now;
-        Notification::create(text, NotificationIcon::Info, 0.8f)->show();
+
+    void customSetup(){
+        PauseLayer::customSetup();
+        createSpeedMenu();
     }
 };
 
 $on_mod(Loaded){
     log::info("CSF CLICK SUPER FRAMES OPTIMIZER (MEME) (REAL) CARGADO - FIXEADO PARA FEATURED");
 #ifdef GEODE_IS_WINDOWS
-    new EventListener([](InvokeBindEvent* e){
+    (void)new EventListener<EventFilter<InvokeBindEvent>>([=](InvokeBindEvent* e){
         if(!e->isDown()) return ListenerResult::Propagate;
-        auto id = e->bind()->getId();
+        auto id = e->getBind()->getId();
         if(id == "csf-075"_spr) csf::setSpeed(csf::kSpeed75);
         else if(id == "csf-10"_spr) csf::setSpeed(csf::kSpeed100);
         else if(id == "csf-125"_spr) csf::setSpeed(csf::kSpeed125);
