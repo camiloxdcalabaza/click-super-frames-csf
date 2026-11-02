@@ -8,8 +8,28 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - uses: geode-sdk/build-geode-mod@main
+      
+      - name: Install Clang 19
+        run: |
+          clang --version
+          sudo apt-get update
+          sudo apt-get install -y clang-19 lld-19 llvm-19
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
+          sudo update-alternatives --install /usr/bin/ld.lld ld.lld /usr/bin/ld.lld-19 100
+          clang --version
+          clang++ --version
+
+      - name: Build Geode Mod
+        uses: geode-sdk/build-geode-mod@main
         with:
           sdk: nightly
           cli: nightly
           target: Win64
+          combine: false
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CFS-Win64
+          path: ${{ steps.build.outputs.build-output }}
