@@ -1,0 +1,1 @@
+Icon: CFS - Yellow CBF style with infinity symbol (more than x). Based on CBF icon by alex/sincos, modified to yellow with infinity.
