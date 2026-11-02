@@ -1,1 +1,19 @@
 
+name: Build Geode Mod
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Geode Mod
+        uses: geode-sdk/build-geode-mod@main
+        with:
+          cli_version: 4.0.0
+          geode_version: v6.0.0-alpha.1
+          bindings_repo: geode-sdk/bindings
+          bindings_ref: main
