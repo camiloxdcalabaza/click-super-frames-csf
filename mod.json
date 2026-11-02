@@ -1,43 +1,18 @@
 {
-    "geode": ">=6.0.0-alpha.1",
+    "geode": "v6.0.0-alpha.1",
     "gd": {
-        "win": "2.2091"
+        "win": "2.2091",
+        "android": "2.2091",
+        "mac": "2.2091"
     },
     "id": "tu.cfs_perfectfps",
     "name": "CFS - Perfect FPS - 10 Stars Edition",
     "version": "v1.0.0",
     "developer": "Tu",
-    "description": "REAL WORKING CFS - Super Inputs mas que ilimitados + CBF Extrapolate visual-only + Adaptive Draw Divide combinable + Hz Detector + Perfect FPS. Carga bien, funciona de verdad. Respects CBF by syzzi.",
+    "description": "REAL WORKING CFS - Super Inputs + CBF Extrapolate + Adaptive Draw Divide + Hz Detector + Perfect FPS",
     "repository": "https://github.com/tu/CFS-PerfectFPS",
     "tags": [
         "performance",
         "gameplay"
-    ],
-    "settings": {
-        "super-inputs": {
-            "name": "Super Inputs",
-            "type": "bool",
-            "default": true
-        },
-        "adaptive-draw-divide": {
-            "name": "Adaptive Draw Divide",
-            "type": "bool",
-            "default": true
-        },
-        "hz-detector": {
-            "name": "Hz Detector",
-            "type": "bool",
-            "default": true
-        },
-        "perfect-fps": {
-            "name": "Perfect FPS",
-            "type": "bool",
-            "default": true
-        },
-        "extrapolate": {
-            "name": "CBF Extrapolate",
-            "type": "bool",
-            "default": true
-        }
-    }
+    ]
 }
