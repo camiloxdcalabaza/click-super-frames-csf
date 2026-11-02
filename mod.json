@@ -1,15 +1,13 @@
 {
     "geode": "v6.0.0-alpha.1",
     "gd": {
-        "win": "2.2091",
-        "android": "2.2091",
-        "mac": "2.2091"
+        "win": "2.2091"
     },
     "id": "tu.cfs_perfectfps",
     "name": "CFS - Perfect FPS - 10 Stars Edition",
     "version": "v1.0.0",
     "developer": "Tu",
-    "description": "REAL WORKING CFS - Super Inputs + CBF Extrapolate + Adaptive Draw Divide + Hz Detector + Perfect FPS",
+    "description": "CFS Perfect FPS - Super Inputs + Extrapolate + Adaptive Draw Divide + Hz Detector + Perfect FPS - 10 Stars",
     "repository": "https://github.com/tu/CFS-PerfectFPS",
     "tags": [
         "performance",
