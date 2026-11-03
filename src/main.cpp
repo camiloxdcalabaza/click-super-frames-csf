@@ -1,4 +1,3 @@
-
 // Icon: logo.png loaded from resources - yellow CBF style with infinity, more than x
 // The Geode loader automatically loads logo.png as mod icon
 
@@ -71,7 +70,7 @@ $on_mod(Loaded) {
 }
 
 class $modify(CFSSuperKB, CCKeyboardDispatcher) {
-    bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool down, bool repeat) {
+    bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool down, bool repeat, double p4) {
         if (CFS::g_initialized && Mod::get()->getSettingValue<bool>("super-inputs")) {
             std::lock_guard<std::mutex> lock(CFS::g_inputMutex);
             double now = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
@@ -80,16 +79,16 @@ class $modify(CFSSuperKB, CCKeyboardDispatcher) {
                 CFS::g_superInputs.erase(CFS::g_superInputs.begin(), CFS::g_superInputs.begin() + 5000);
             }
         }
-        return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat);
+        return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat, p4);
     }
 };
 
 class $modify(CFSPerfectParticle, cocos2d::CCParticleSystem) {
-    bool initWithTotalParticles(unsigned int num) {
+    bool initWithTotalParticles(unsigned int num, bool p2) {
         if (Mod::get()->getSettingValue<bool>("perfect-fps") && num > 150) {
             num = 50;
         }
-        return CCParticleSystem::initWithTotalParticles(num);
+        return CCParticleSystem::initWithTotalParticles(num, p2);
     }
 };
 
