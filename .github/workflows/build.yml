@@ -5,21 +5,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Instalar Clang 19
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y clang-19 lld-19 llvm-19-dev clang-tools-19 libc++-19-dev
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
-          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang-18 || true
-          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++-18 || true
-          sudo ln -sf /usr/bin/clang-scan-deps-19 /usr/bin/clang-scan-deps || true
-          clang --version
-
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
