@@ -20,4 +20,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: CFS-Perfect-FPS
-          path: build/*.geode
+          path: |
+            build/**/*.geode
+            build/*.geode
