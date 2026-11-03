@@ -15,6 +15,7 @@ jobs:
           sdk: v6.0.0-alpha.1
           cli: v4.0.0
           target: Win64
+          args: "-DGEODE_PACKAGE_ZSTD=OFF"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
