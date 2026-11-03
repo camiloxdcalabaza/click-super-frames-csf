@@ -8,9 +8,16 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
           sdk: v6.0.0-alpha.1
           cli: v4.0.0
           target: Win64
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CFS-Perfect-FPS
+          path: build/*.geode
