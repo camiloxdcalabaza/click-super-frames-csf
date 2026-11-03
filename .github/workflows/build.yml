@@ -23,6 +23,6 @@ jobs:
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: nightly
-          cli: nightly
+          sdk: v6.0.0-alpha.1
+          cli: v4.0.0
           target: Win64
