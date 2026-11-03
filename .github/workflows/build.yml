@@ -6,21 +6,42 @@ on:
 jobs:
   build:
     runs-on: ubuntu-24.04
-    env:
-      CC: clang-19
-      CXX: clang++-19
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Clang 19
+      - name: FORZAR TODO A CLANG 19 - ULTRA
         run: |
-          sudo apt-get update
-          sudo apt-get install -y clang-19 lld-19 llvm-19 libc++-19-dev
-          clang-19 --version
-          clang++-19 --version
+          set -e
+          echo "=== BORRANDO CLANG VIEJO ==="
+          sudo apt-get update -y
+          sudo apt-get remove -y clang-14 clang-15 clang-16 clang-17 clang-18 || true
+          
+          echo "=== INSTALANDO CLANG 19 ==="
+          sudo apt-get install -y clang-19 lld-19 libc++-19-dev libc++abi-19-dev
+          
+          echo "=== FORZANDO SYMLINKS A 19 ==="
+          sudo rm -f /usr/bin/clang /usr/bin/clang++ /usr/bin/cc /usr/bin/c++
+          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang
+          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++
+          sudo ln -sf /usr/bin/clang-19 /usr/bin/cc
+          sudo ln -sf /usr/bin/clang++-19 /usr/bin/c++
+          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang-18
+          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++-18
+          
+          echo "=== VERIFICACION ==="
+          clang --version
+          clang++ --version
+          
+          echo "CC=/usr/bin/clang-19" >> $GITHUB_ENV
+          echo "CXX=/usr/bin/clang++-19" >> $GITHUB_ENV
 
-      - name: Build Geode Mod
+      - name: Build Geode Mod - FORZADO ULTRA
         uses: geode-sdk/build-geode-mod@main
+        env:
+          CC: /usr/bin/clang-19
+          CXX: /usr/bin/clang++-19
+          CMAKE_C_COMPILER: /usr/bin/clang-19
+          CMAKE_CXX_COMPILER: /usr/bin/clang++-19
         with:
           sdk: nightly
           cli: nightly
