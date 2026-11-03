@@ -9,49 +9,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: FORZAR TODO A CLANG 19 - TODO CORREGIDO
+      - name: Instalar Clang 19
         run: |
-          set -e
-          echo "=== BORRANDO TODO CLANG VIEJO ==="
           sudo apt-get update -y
-          sudo apt-get remove -y clang-14 clang-15 clang-16 clang-17 clang-18 llvm-14 llvm-15 llvm-16 llvm-17 llvm-18 || true
-          sudo apt-get autoremove -y
-          
-          echo "=== INSTALANDO TODO CLANG 19 NECESARIO ==="
-          sudo apt-get install -y clang-19 clang++-19 lld-19 llvm-19-dev clang-tools-19 clang-tidy-19 clang-format-19 libc++-19-dev libc++abi-19-dev libclang-19-dev liblld-19-dev
-          
-          echo "=== FORZANDO SYMLINKS A 19 ==="
-          sudo rm -f /usr/bin/clang /usr/bin/clang++ /usr/bin/cc /usr/bin/c++ /usr/bin/clang-scan-deps
-          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang
-          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++
-          sudo ln -sf /usr/bin/clang-19 /usr/bin/cc
-          sudo ln -sf /usr/bin/clang++-19 /usr/bin/c++
-          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang-18
-          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++-18
-          sudo ln -sf /usr/bin/clang-scan-deps-19 /usr/bin/clang-scan-deps
-          sudo ln -sf /usr/bin/ld.lld-19 /usr/bin/ld.lld || true
-          
-          echo "=== VERIFICACION TODO ==="
+          sudo apt-get install -y clang-19 lld-19 llvm-19-dev clang-tools-19 libc++-19-dev
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
+          sudo ln -sf /usr/bin/clang-19 /usr/bin/clang-18 || true
+          sudo ln -sf /usr/bin/clang++-19 /usr/bin/clang++-18 || true
+          sudo ln -sf /usr/bin/clang-scan-deps-19 /usr/bin/clang-scan-deps || true
           clang --version
-          clang++ --version
-          clang-scan-deps --version
-          lld --version || ld.lld --version
-          
-          echo "CC=/usr/bin/clang-19" >> $GITHUB_ENV
-          echo "CXX=/usr/bin/clang++-19" >> $GITHUB_ENV
-          echo "CMAKE_C_COMPILER=/usr/bin/clang-19" >> $GITHUB_ENV
-          echo "CMAKE_CXX_COMPILER=/usr/bin/clang++-19" >> $GITHUB_ENV
 
-      - name: Build Geode Mod - TODO FORZADO
+      - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
-        env:
-          CC: /usr/bin/clang-19
-          CXX: /usr/bin/clang++-19
-          CMAKE_C_COMPILER: /usr/bin/clang-19
-          CMAKE_CXX_COMPILER: /usr/bin/clang++-19
-          CMAKE_LINKER: /usr/bin/lld-19
-          CMAKE_C_COMPILER_LAUNCHER: sccache
-          CMAKE_CXX_COMPILER_LAUNCHER: sccache
         with:
           sdk: nightly
           cli: nightly
