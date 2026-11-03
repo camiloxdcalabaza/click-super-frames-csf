@@ -7,7 +7,7 @@
     "name": "Click Super Frames",
     "version": "v1.0.0",
     "developer": "Tu",
-    "description": "Click Super Frames - The Ultimate Performance Mod for GD 2.2091. Inspired by CBF! Features: Super Inputs (More than Unlimited - Never lose a click), Hz Detector (Auto 60/144/240/360Hz), Perfect FPS (Stable 120 FPS no drops), Adaptive Draw Divide (Combinable with CBF), Improved Bismuth (Cleans invisible particles), Extrapolate Visual-Only (Real hitbox visualization). Perfect for wave spam, deco heavy levels, and extreme demons. 10 Stars Edition.",
+    "description": "Click Super Frames - The Ultimate Performance Mod for GD 2.2091. Inspired by CBF! Features: Super Inputs, Hz Detector, Perfect FPS, Adaptive Draw Divide, Improved Bismuth, Extrapolate Visual-Only. Perfect for wave spam, deco heavy levels, and extreme demons. 10 Stars Edition.",
     "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
     "tags": [
         "performance",
@@ -16,9 +16,6 @@
         "utility",
         "enhancement"
     ],
-    "dependencies": [],
-    "resources": {},
-    "links": {
-        "source": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
-    }
+    "dependencies": {},
+    "resources": {}
 }
