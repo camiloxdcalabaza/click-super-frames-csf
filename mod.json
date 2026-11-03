@@ -3,14 +3,22 @@
     "gd": {
         "win": "2.2091"
     },
-    "id": "tu.cfs_perfectfps",
-    "name": "CFS - Perfect FPS - 10 Stars Edition",
+    "id": "tu.click-super-frames",
+    "name": "Click Super Frames",
     "version": "v1.0.0",
     "developer": "Tu",
-    "description": "CFS Perfect FPS - Super Inputs + Extrapolate + Adaptive Draw Divide + Hz Detector + Perfect FPS - 10 Stars",
-    "repository": "https://github.com/tu/CFS-PerfectFPS",
+    "description": "Click Super Frames - The Ultimate Performance Mod for GD 2.2091. Inspired by CBF! Features: Super Inputs (More than Unlimited - Never lose a click), Hz Detector (Auto 60/144/240/360Hz), Perfect FPS (Stable 120 FPS no drops), Adaptive Draw Divide (Combinable with CBF), Improved Bismuth (Cleans invisible particles), Extrapolate Visual-Only (Real hitbox visualization). Perfect for wave spam, deco heavy levels, and extreme demons. 10 Stars Edition.",
+    "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
     "tags": [
         "performance",
-        "gameplay"
-    ]
+        "gameplay",
+        "fps",
+        "utility",
+        "enhancement"
+    ],
+    "dependencies": [],
+    "resources": {},
+    "links": {
+        "source": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
+    }
 }
