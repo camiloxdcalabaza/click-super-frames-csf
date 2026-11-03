@@ -11,18 +11,16 @@ jobs:
       CXX: clang++-19
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Clang 19
+
+      - name: Install Clang 19
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang-19 lld-19 llvm-19 libc++-19-dev libc++abi-19-dev
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 100
+          sudo apt-get install -y clang-19 lld-19 llvm-19 libc++-19-dev
           clang-19 --version
           clang++-19 --version
 
       - name: Build Geode Mod
-        uses: geode-sdk/build-geode-mod@v2
+        uses: geode-sdk/build-geode-mod@main
         with:
           sdk: nightly
           cli: nightly
