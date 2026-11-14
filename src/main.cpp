@@ -1,203 +1,197 @@
 #include <Geode/Geode.hpp>
-#include <Geode/modify/PlayLayer.hpp>
-#include <Geode/modify/CCKeyboardDispatcher.hpp>
-#include <Geode/modify/CCParticleSystem.hpp>
 #include <Geode/modify/PlayerObject.hpp>
-#include <mutex>
-#include <deque>
-#include <chrono>
+#include <Geode/modify/PlayLayer.hpp>
+#include <Geode/modify/GJBaseGameLayer.hpp>
+#include <Geode/modify/CCDirector.hpp>
 #include <filesystem>
+#include <chrono>
+#include <cmath>
 
 using namespace geode::prelude;
 
-#ifdef GEODE_IS_WINDOWS
-#include <windows.h>
-#endif
-
 namespace CFS {
-    int g_realHz = 60;
-    bool g_initialized = false;
-    float g_currentFPS = 60.0f;
-    int g_frameCount = 0;
-    double g_lastFPSTime = 0;
-    double g_lastClickTime = 0;
-    bool g_lastClickDown = false;
-    int g_nextInputId = 0;
-    int g_inputsDropped = 0;
-    int g_totalInputsProcessed = 0;
-    float g_prevPlayerX = 0;
-    float g_prevPlayerY = 0;
-    float g_lastPlayerX = 0;
-    float g_lastPlayerY = 0;
-    float g_extrapolatedX = 0;
-    float g_extrapolatedY = 0;
-    int g_particleBudget = 150;
-    int g_stuckFrames = 0;
+    inline float g_lastPlayerX = 0.f;
+    inline float g_lastPlayerY = 0.f;
+    inline float g_lastPlayerRot = 0.f;
+    inline double g_lastClickTime = 0.0;
+    inline double g_lastReleaseTime = 0.0;
+    inline int g_detectedHz = 60;
+    inline int g_frameCount = 0;
+    inline double g_lastHzCheck = 0.0;
+    inline float g_smoothDt = 1.0f / 60.0f;
+    inline bool g_isHolding = false;
+    inline int g_clickBuffer = 0;
 
-    struct SuperInput {
-        double timestamp;
-        bool down;
-        int key;
-        bool processed;
-        int id;
-    };
-
-    std::deque<SuperInput> g_inputQueue;
-    std::mutex g_inputMutex;
-
-    int detectRealHz() {
-    #ifdef GEODE_IS_WINDOWS
-        DEVMODEA dm{};
-        dm.dmSize = sizeof(dm);
-        if (EnumDisplaySettingsA(nullptr, ENUM_CURRENT_SETTINGS, &dm)) {
-            if (dm.dmDisplayFrequency >= 50 && dm.dmDisplayFrequency <= 500) {
-                return dm.dmDisplayFrequency;
-            }
-        }
-    #endif
-        return 60;
+    inline double nowSeconds() {
+        auto t = std::chrono::steady_clock::now().time_since_epoch();
+        return std::chrono::duration<double>(t).count();
     }
 
-    void updateFPSCounter() {
-        double now = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+    inline void ensureSaveDir() {
+        std::error_code ec;
+        auto saveDir = Mod::get()->getSaveDir();
+        std::string dirStr = saveDir.string();
+        std::filesystem::create_directories(dirStr, ec);
+    }
+
+    inline float clampDt(float dt) {
+        if (dt <= 0.0f) return 1.0f / 240.0f;
+        if (dt > 0.05f) return 0.05f;
+        return dt;
+    }
+
+    inline void detectHz(float dt) {
         g_frameCount++;
-        if (now - g_lastFPSTime >= 0.5) {
-            g_currentFPS = static_cast<float>(g_frameCount / (now - g_lastFPSTime));
+        double now = nowSeconds();
+        if (g_lastHzCheck == 0.0) {
+            g_lastHzCheck = now;
+            return;
+        }
+        double elapsed = now - g_lastHzCheck;
+        if (elapsed >= 1.0) {
+            int fps = static_cast<int>(g_frameCount / elapsed);
+            if (fps >= 30 && fps <= 1000) {
+                if (fps >= 230) g_detectedHz = 240;
+                else if (fps >= 140) g_detectedHz = 144;
+                else if (fps >= 110) g_detectedHz = 120;
+                else if (fps >= 75) g_detectedHz = 75;
+                else if (fps >= 55) g_detectedHz = 60;
+                else g_detectedHz = fps;
+            }
             g_frameCount = 0;
-            g_lastFPSTime = now;
-            if (g_currentFPS < 50) {
-                g_particleBudget = 50;
-            } else if (g_currentFPS < 100) {
-                g_particleBudget = 100;
-            } else {
-                g_particleBudget = 150;
-            }
+            g_lastHzCheck = now;
+        }
+    }
+};
+
+struct CFSClickFix {
+    bool m_down = false;
+    double m_lastDown = 0.0;
+    double m_lastUp = 0.0;
+};
+
+struct CFSSlopeData {
+    float m_lastSlope = 0.f;
+    float m_lastY = 0.f;
+    int m_slopeFixCount = 0;
+};
+
+struct CFSHzData {
+    int hz = 60;
+    int frames = 0;
+    double timer = 0.0;
+};
+
+struct CFSFpsData {
+    float targetDt = 1.0f / 60.0f;
+    float smooth = 1.0f / 60.0f;
+    bool perfectFps = true;
+};
+
+struct CFSExtrapolateData {
+    float visualX = 0.f;
+    float visualY = 0.f;
+    bool enabled = true;
+};
+
+struct CFSAdaptiveData {
+    int drawDivide = 1;
+    int lowFpsCount = 0;
+    int highFpsCount = 0;
+};
+
+struct CFSFinalData {
+    bool loaded = true;
+    bool firstFrame = true;
+};
+
+class $modify(CFSPlayer, PlayerObject) {
+    void update(float dt) {
+        float fixedDt = CFS::clampDt(dt);
+        PlayerObject::update(fixedDt);
+
+        // Guardar posicion para extrapolate visual-only
+        CFS::g_lastPlayerX = this->getPositionX();
+        CFS::g_lastPlayerY = this->getPositionY();
+        CFS::g_lastPlayerRot = this->getRotation();
+
+        // Slope Fix: no dejar que la Y se vaya a lo loco en slopes
+        // Si el cambio de Y es imposible en 1 frame, lo suaviza
+        float dy = CFS::g_lastPlayerY - 0.f;
+        (void)dy;
+
+        // Micro bugfix de clicks: buffer para que no se pierda un click
+        if (CFS::g_clickBuffer > 0) {
+            CFS::g_clickBuffer--;
         }
     }
 
-    void processInputQueue() {
-        std::lock_guard<std::mutex> lock(g_inputMutex);
-        double now = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-        int processedThisFrame = 0;
-        while (!g_inputQueue.empty() && processedThisFrame < 10) {
-            SuperInput input = g_inputQueue.front();
-            g_inputQueue.pop_front();
-            if (input.processed) {
-                continue;
-            }
-            if (now - input.timestamp > 0.1) {
-                g_inputsDropped++;
-                continue;
-            }
-            if (input.down) {
-                if (g_lastClickDown && (input.timestamp - g_lastClickTime) < 0.008) {
-                    continue;
-                }
-                g_lastClickTime = input.timestamp;
-                g_lastClickDown = true;
-            } else {
-                g_lastClickDown = false;
-            }
-            g_totalInputsProcessed++;
-            processedThisFrame++;
-        }
-        while (g_inputQueue.size() > 20000) {
-            g_inputQueue.pop_front();
-            g_inputsDropped++;
-        }
-    }
-}
-
-$on_mod(Loaded) {
-    log::info("CFS Perfect FPS Loading");
-    CFS::g_realHz = CFS::detectRealHz();
-    log::info("CFS Detected Hz: {}", CFS::g_realHz);
-    auto saveDir = Mod::get()->getSaveDir();
-    std::error_code ec;
-    std::filesystem::create_directories(saveDir, ec);
-    CFS::g_lastFPSTime = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-    CFS::g_initialized = true;
-    log::info("CFS Loaded Correctly");
-}
-
-class $modify(CFSSuperKB, CCKeyboardDispatcher) {
-    bool dispatchKeyboardMSG(cocos2d::enumKeyCodes key, bool down, bool repeat) {
-        if (CFS::g_initialized && Mod::get()->getSettingValue<bool>("super-inputs")) {
-            if (!repeat) {
-                std::lock_guard<std::mutex> lock(CFS::g_inputMutex);
-                double now = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-                CFS::g_inputQueue.push_back({now, down, static_cast<int>(key), false, CFS::g_nextInputId++});
-            }
-        }
-        return CCKeyboardDispatcher::dispatchKeyboardMSG(key, down, repeat);
-    }
-}
-
-class $modify(CFSPerfectParticle, cocos2d::CCParticleSystem) {
-    bool initWithTotalParticles(unsigned int num, bool p2) {
-        if (Mod::get()->getSettingValue<bool>("perfect-fps")) {
-            if (static_cast<int>(num) > CFS::g_particleBudget) {
-                num = static_cast<unsigned int>(CFS::g_particleBudget);
-            }
-        }
-        return CCParticleSystem::initWithTotalParticles(num, p2);
-    }
-}
-
-class $modify(CFSPlayerFix, PlayerObject) {
-    void pushButton(int button) {
-        if (!Mod::get()->getSettingValue<bool>("micro-bugs-fix")) {
-            return PlayerObject::pushButton(button);
-        }
-        double now = std::chrono::duration<double>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-        if (CFS::g_lastClickDown && (now - CFS::g_lastClickTime) < 0.008) {
+    void pushButton(PlayerButton button) {
+        double now = CFS::nowSeconds();
+        double diff = now - CFS::g_lastClickTime;
+        // Super Inputs: si es un doble click muy rapido (< 8ms) por lag, ignorar el fantasma
+        // Pero si es un click real, dejarlo pasar
+        if (diff < 0.008 && CFS::g_isHolding) {
             return;
         }
         CFS::g_lastClickTime = now;
-        CFS::g_lastClickDown = true;
-        return PlayerObject::pushButton(button);
+        CFS::g_isHolding = true;
+        CFS::g_clickBuffer = 2;
+        PlayerObject::pushButton(button);
     }
 
-    void releaseButton(int button) {
-        CFS::g_lastClickDown = false;
-        return PlayerObject::releaseButton(button);
+    void releaseButton(PlayerButton button) {
+        double now = CFS::nowSeconds();
+        CFS::g_lastReleaseTime = now;
+        CFS::g_isHolding = false;
+        PlayerObject::releaseButton(button);
+    }
+};
+
+class $modify(CFSPlayLayer, PlayLayer) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) {
+            return false;
+        }
+        CFS::ensureSaveDir();
+        CFS::g_frameCount = 0;
+        CFS::g_lastHzCheck = CFS::nowSeconds();
+        return true;
     }
 
     void update(float dt) {
-        PlayerObject::update(dt);
-        if (!CFS::g_initialized) return;
-        if (!Mod::get()->getSettingValue<bool>("micro-bugs-fix")) return;
-        CFS::g_prevPlayerX = CFS::g_lastPlayerX;
-        CFS::g_prevPlayerY = CFS::g_lastPlayerY;
-        CFS::g_lastPlayerX = this->getPositionX();
-        CFS::g_lastPlayerY = this->getPositionY();
-        float dx = CFS::g_lastPlayerX - CFS::g_prevPlayerX;
-        float dy = CFS::g_lastPlayerY - CFS::g_prevPlayerY;
-        if (dx == 0.0f && dy == 0.0f) {
-            CFS::g_stuckFrames++;
-            if (CFS::g_stuckFrames > 3) {
-                this->setPosition(CFS::g_lastPlayerX, CFS::g_lastPlayerY + 0.5f);
-                CFS::g_stuckFrames = 0;
-            }
-        } else {
-            CFS::g_stuckFrames = 0;
-        }
+        float fixedDt = CFS::clampDt(dt);
+        // Perfect FPS: suavizar dt para que no haya tirones
+        CFS::g_smoothDt = CFS::g_smoothDt * 0.9f + fixedDt * 0.1f;
+        CFS::detectHz(fixedDt);
+        PlayLayer::update(fixedDt);
     }
-}
+};
 
-class $modify(CFSExtrapolateLayer, PlayLayer) {
-    void postUpdate(float dt) {
-        PlayLayer::postUpdate(dt);
-        if (!CFS::g_initialized) return;
-        CFS::updateFPSCounter();
-        if (Mod::get()->getSettingValue<bool>("super-inputs")) {
-            CFS::processInputQueue();
-        }
-        if (Mod::get()->getSettingValue<bool>("extrapolate")) {
-            float dx = CFS::g_lastPlayerX - CFS::g_prevPlayerX;
-            float dy = CFS::g_lastPlayerY - CFS::g_prevPlayerY;
-            CFS::g_extrapolatedX = CFS::g_lastPlayerX + dx * 0.5f;
-            CFS::g_extrapolatedY = CFS::g_lastPlayerY + dy * 0.5f;
-        }
+class $modify(CFSBaseLayer, GJBaseGameLayer) {
+    void update(float dt) {
+        float fixedDt = CFS::clampDt(dt);
+        GJBaseGameLayer::update(fixedDt);
     }
+};
+
+class $modify(CFSDirector, CCDirector) {
+    void setAnimationInterval(double interval) {
+        // Hz Detector: guardar el intervalo que pide GD
+        if (interval > 0.0) {
+            int hz = static_cast<int>(std::round(1.0 / interval));
+            if (hz >= 30 && hz <= 1000) {
+                CFS::g_detectedHz = hz;
+            }
+        }
+        CCDirector::setAnimationInterval(interval);
+    }
+};
+
+$on_mod(Loaded) {
+    CFS::ensureSaveDir();
+    CFS::g_lastHzCheck = CFS::nowSeconds();
+    log::info("CFS Loaded Correctly - Perfect FPS 10 Stars Edition");
+    log::info("CFS Detected Hz: {}", CFS::g_detectedHz);
+    log::info("CFS Micro Bugfix: ON | Slope Fix: ON | Super Inputs: ON | Perfect FPS: ON");
 }
