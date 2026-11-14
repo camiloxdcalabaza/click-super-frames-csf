@@ -1,7 +1,7 @@
 {
   "geode": "5.11.2",
   "gd": {
-    "windows": "2.2081",
+    "win": "2.2081",
     "android": "2.2081",
     "mac": "2.2081",
     "ios": "2.2081"
@@ -11,10 +11,16 @@
   "name": "Click Super Frames",
   "developer": "camiloxdcalabaza",
   "description": "Fixes click loss on spam, slope bugs, lag teleports and adds CFS Adaptive for smoother FPS on GD 2.2081.",
+  "about": "Click Super Frames by camiloxdcalabaza. Fixes click loss, slope bugs, lag teleports, detects Hz and adds CFS Adaptive. Made for GD 2.2081. Tested on Windows.",
+  "changelog": "v1.0.0 - First release. Click fix, slope fix, dt fix, Hz detect, CFS Adaptive, extrapolate.",
   "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
   "issues": {
     "url": "https://github.com/camiloxdcalabaza/click-super-frames-csf/issues",
     "info": "Report issues on GitHub. Please include your GD version, Geode version and what happened."
+  },
+  "links": {
+    "community": "https://discord.gg/geode",
+    "homepage": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
   },
   "tags": [
     "gameplay",
@@ -30,5 +36,11 @@
   "resources": {
     "sprites": []
   },
-  "settings": {}
+  "settings": {},
+  "early-load": false,
+  "api": {},
+  "info": {
+    "about": "Click Super Frames by camiloxdcalabaza. Fixes click loss, slope bugs, lag teleports, detects Hz and adds CFS Adaptive. Made for GD 2.2081.",
+    "changelog": "v1.0.0 - First release. Click fix, slope fix, dt fix, Hz detect, CFS Adaptive, extrapolate."
+  }
 }
