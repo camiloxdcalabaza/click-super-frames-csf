@@ -138,8 +138,8 @@ class $modify(CFSPlayer, PlayerObject) {
 };
 
 class $modify(CFSPlayLayer, PlayLayer) {
-    bool init(GJGameLevel* level, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, dontCreateObjects)) {
+    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) {
             return false;
         }
         CFS::ensureSaveDir();
