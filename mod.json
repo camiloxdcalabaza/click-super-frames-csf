@@ -1,24 +1,20 @@
 {
   "geode": "5.11.2",
   "gd": {
-    "win": "2.2081",
+    "windows": "2.2081",
     "android": "2.2081",
     "mac": "2.2081",
     "ios": "2.2081"
   },
+  "version": "v1.0.0",
   "id": "camiloxdcalabaza.click-super-frames",
   "name": "Click Super Frames",
-  "version": "v1.0.0",
   "developer": "camiloxdcalabaza",
-  "description": "Click Super Frames - CFS Perfect FPS 10 Stars Edition - Micro bugfix, Slope Fix, Super Inputs, Perfect FPS, Extrapolate visual-only, Adaptive Draw Divide, Hz Detector. 60Hz feels like 240Hz.",
+  "description": "Fixes click loss on spam, slope bugs, lag teleports and adds CFS Adaptive for smoother FPS on GD 2.2081.",
   "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
   "issues": {
     "url": "https://github.com/camiloxdcalabaza/click-super-frames-csf/issues",
-    "type": "github"
-  },
-  "links": {
-    "community": "https://discord.gg/geometrydash",
-    "homepage": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
+    "info": "Report issues on GitHub. Please include your GD version, Geode version and what happened."
   },
   "tags": [
     "gameplay",
@@ -26,58 +22,13 @@
     "utility"
   ],
   "dependencies": {
-    "geode.node-ids": "v1.23.3"
-  },
-  "resources": {
-    "files": [
-      "resources/*"
-    ],
-    "sprites": [],
-    "spritesheets": {}
-  },
-  "settings": {
-    "super-inputs": {
-      "name": "Super Inputs",
-      "description": "Super Inputs 20k buffer, mutex, high precision. No lost clicks.",
-      "type": "bool",
-      "default": true
-    },
-    "perfect-fps": {
-      "name": "Perfect FPS",
-      "description": "Perfect FPS - Smooth FPS without heavy particles.",
-      "type": "bool",
-      "default": true
-    },
-    "extrapolate": {
-      "name": "Extrapolate Visual-Only",
-      "description": "CBF Extrapolate visual-only physics. Does not change gameplay physics.",
-      "type": "bool",
-      "default": true
-    },
-    "micro-bugfix": {
-      "name": "Micro Bugfix",
-      "description": "Micro Bugfix for clicks and GD. Fixes ghost clicks and stuck inputs.",
-      "type": "bool",
-      "default": true
-    },
-    "adaptive-draw": {
-      "name": "Adaptive Draw Divide",
-      "description": "Adaptive Draw Divide combinable. Less lag on heavy deco levels.",
-      "type": "bool",
-      "default": true
-    },
-    "slope-fix": {
-      "name": "Slope Fix",
-      "description": "Slope Physics Fix. Fixes slope deaths and weird Y jumps on slopes.",
-      "type": "bool",
-      "default": true
-    },
-    "hz-detector": {
-      "name": "Hz Detector",
-      "description": "Real Hz Detector with EnumDisplaySettings. Detects your real monitor Hz.",
-      "type": "bool",
-      "default": true
+    "geode.node-ids": {
+      "version": "v1.23.3",
+      "importance": "required"
     }
   },
-  "early-load": false
+  "resources": {
+    "sprites": []
+  },
+  "settings": {}
 }
