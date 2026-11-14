@@ -1,25 +1,29 @@
-name: Build
+name: Build Geode Mod
+
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Build CFS Perfect FPS
     runs-on: windows-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Build Geode Mod
         uses: geode-sdk/build-geode-mod@main
         with:
-          sdk: v6.0.0-alpha.1
-          target: Win64
-          args: "-DGEODE_PACKAGE_ZSTD=OFF"
+          combine: true
 
-      - name: Upload artifact
+      - name: Upload .geode
         uses: actions/upload-artifact@v4
         with:
           name: CFS-Perfect-FPS
-          path: |
-            build/**/*.geode
-            build/*.geode
+          path: build/*.geode
+          if-no-files-found: warn
