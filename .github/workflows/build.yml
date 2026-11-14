@@ -9,21 +9,16 @@ on:
 
 jobs:
   build:
-    name: Build CFS Perfect FPS
     runs-on: windows-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Build Geode Mod
-        uses: geode-sdk/build-geode-mod@main
+      - uses: geode-sdk/build-geode-mod@main
         with:
           combine: true
 
-      - name: Upload .geode
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: CFS-Perfect-FPS
-          path: build/*.geode
-          if-no-files-found: warn
+          path: "**/*.geode"
+          if-no-files-found: error
