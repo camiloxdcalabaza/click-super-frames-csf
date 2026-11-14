@@ -109,18 +109,9 @@ class $modify(CFSPlayer, PlayerObject) {
     void update(float dt) {
         float fixedDt = CFS::clampDt(dt);
         PlayerObject::update(fixedDt);
-
-        // Guardar posicion para extrapolate visual-only
         CFS::g_lastPlayerX = this->getPositionX();
         CFS::g_lastPlayerY = this->getPositionY();
         CFS::g_lastPlayerRot = this->getRotation();
-
-        // Slope Fix: no dejar que la Y se vaya a lo loco en slopes
-        // Si el cambio de Y es imposible en 1 frame, lo suaviza
-        float dy = CFS::g_lastPlayerY - 0.f;
-        (void)dy;
-
-        // Micro bugfix de clicks: buffer para que no se pierda un click
         if (CFS::g_clickBuffer > 0) {
             CFS::g_clickBuffer--;
         }
@@ -129,8 +120,6 @@ class $modify(CFSPlayer, PlayerObject) {
     void pushButton(PlayerButton button) {
         double now = CFS::nowSeconds();
         double diff = now - CFS::g_lastClickTime;
-        // Super Inputs: si es un doble click muy rapido (< 8ms) por lag, ignorar el fantasma
-        // Pero si es un click real, dejarlo pasar
         if (diff < 0.008 && CFS::g_isHolding) {
             return;
         }
@@ -149,8 +138,8 @@ class $modify(CFSPlayer, PlayerObject) {
 };
 
 class $modify(CFSPlayLayer, PlayLayer) {
-    bool init(GJGameLevel* level, bool useReplay, bool dontCreateObjects) {
-        if (!PlayLayer::init(level, useReplay, dontCreateObjects)) {
+    bool init(GJGameLevel* level, bool dontCreateObjects) {
+        if (!PlayLayer::init(level, dontCreateObjects)) {
             return false;
         }
         CFS::ensureSaveDir();
@@ -161,7 +150,6 @@ class $modify(CFSPlayLayer, PlayLayer) {
 
     void update(float dt) {
         float fixedDt = CFS::clampDt(dt);
-        // Perfect FPS: suavizar dt para que no haya tirones
         CFS::g_smoothDt = CFS::g_smoothDt * 0.9f + fixedDt * 0.1f;
         CFS::detectHz(fixedDt);
         PlayLayer::update(fixedDt);
@@ -177,7 +165,6 @@ class $modify(CFSBaseLayer, GJBaseGameLayer) {
 
 class $modify(CFSDirector, CCDirector) {
     void setAnimationInterval(double interval) {
-        // Hz Detector: guardar el intervalo que pide GD
         if (interval > 0.0) {
             int hz = static_cast<int>(std::round(1.0 / interval));
             if (hz >= 30 && hz <= 1000) {
