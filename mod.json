@@ -3,11 +3,11 @@
     "gd": {
         "win": "2.2091"
     },
-    "id": "tu.click-super-frames",
+    "id": "camiloxdcalabaza.click-super-frames",
     "name": "Click Super Frames",
     "version": "v1.0.0",
-    "developer": "Tu",
-    "description": "Click Super Frames - The Ultimate Performance Mod for GD 2.2091. Inspired by CBF! Features: Super Inputs, Hz Detector, Perfect FPS, Adaptive Draw Divide, Improved Bismuth, Extrapolate Visual-Only. Perfect for wave spam, deco heavy levels, and extreme demons. 10 Stars Edition.",
+    "developer": "camiloxdcalabaza",
+    "description": "Click Super Frames - The Ultimate Performance Mod for GD 2.2091. Inspired by 【entity-CBF¦canonical_name=CBF】! Features: Super Inputs, Hz Detector, Perfect FPS, Adaptive Draw Divide, Extrapolate Visual-Only, Micro Bugs Fix. Perfect for wave spam, deco heavy levels, and extreme demons. 10 Stars Edition.",
     "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
     "tags": [
         "performance",
@@ -16,6 +16,39 @@
         "utility",
         "enhancement"
     ],
-    "dependencies": {},
-    "resources": {}
+    "dependencies": {
+        "geode.node-ids": "v1.0.0"
+    },
+    "settings": {
+        "super-inputs": {
+            "type": "bool",
+            "default": true,
+            "name": "Super Inputs",
+            "description": "Guarda hasta 20k inputs con mutex"
+        },
+        "perfect-fps": {
+            "type": "bool",
+            "default": true,
+            "name": "Perfect FPS",
+            "description": "Recorta particulas pesadas"
+        },
+        "extrapolate": {
+            "type": "bool",
+            "default": true,
+            "name": "Extrapolate Visual-Only",
+            "description": "Hace que se vea mas fluido, solo visual"
+        },
+        "micro-bugs-fix": {
+            "type": "bool",
+            "default": true,
+            "name": "Micro Bugs Fix",
+            "description": "Arregla clicks, doble salto, click pegado, spider y slope physics"
+        },
+        "adaptive-draw": {
+            "type": "bool",
+            "default": true,
+            "name": "Adaptive Draw Divide",
+            "description": "Baja el dibujo cuando hay mucha deco"
+        }
+    }
 }
