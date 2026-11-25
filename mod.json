@@ -1,40 +1,42 @@
-"gd": {
-    "win": "2.2091",
-    "android": "2.2091",
-    "mac": "2.2091",
-    "ios": "2.2091"
-}
-  "version": "v1.0.1",
-  "id": "camiloxdcalabaza.click-super-frames",
-  "name": "Click Super Frames",
-  "developer": "camiloxdcalabaza",
-  "description": "Click Super Frames is not just a click mod. It delivers massive input handling, misc click bugfixes and super performance, combining the best of input, stability and FPS mods in one lightweight mod for GD 2.209.",
-  "about": "Click Super Frames by camiloxdcalabaza. Not just more inputs - massive input handling so spam clicks don't get lost, misc click bugfixes for micros, lag spikes and unregistered clicks, and super performance for stable FPS and smooth gameplay. No slow motion, no ghosting, no double player. Made for GD 2.209 / Geode v6.0.0. Works great combined with other performance and QoL mods.",
-  "changelog": "v1.0.1 - Updated for GD 2.209 / Geode v6.0.0. Improved description, super inputs, misc click bugfixes and performance. v1.0.0 - First release. Click fix, slope fix, dt fix, Hz detect, CFS Adaptive, extrapolate.",
-  "repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
-  "issues": {
-    "url": "https://github.com/camiloxdcalabaza/click-super-frames-csf/issues",
-    "info": "Report issues on GitHub. Please include your GD version, Geode version and what happened."
-  },
-  "links": {
-    "community": "https://discord.gg/geode",
-    "homepage": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
-  },
-  "tags": [
-    "gameplay",
-    "performance",
-    "utility"
-  ],
-  "dependencies": {
-    "geode.node-ids": {
-      "version": "v1.24.0",
-      "importance": "required"
-    }
-  },
-  "resources": {
-    "sprites": []
-  },
-  "settings": {},
-  "early-load": false,
-  "api": {}
+{
+	"geode": "6.0.0",
+	"gd": {
+		"win": "2.2091",
+		"android": "2.2091",
+		"mac": "2.2091",
+		"ios": "2.2091"
+	},
+	"version": "v1.0.1",
+	"id": "camiloxdcalabaza.click-super-frames",
+	"name": "Click Super Frames",
+	"developer": "camiloxdcalabaza",
+	"description": "Click Super Frames is not just a click mod. It delivers massive input handling, misc click bugfixes and super performance, combining the best of input, stability and FPS mods in one lightweight mod for GD 2.209.",
+	"about": "Click Super Frames by camiloxdcalabaza. Not just more inputs - massive input handling so spam clicks don't get lost, misc click bugfixes for micros, lag spikes and unregistered clicks, and super performance for stable FPS and smooth gameplay. No slow motion, no ghosting, no double player. Made for GD 2.209 / Geode v6.0.0. Works great combined with other performance and QoL mods.",
+	"changelog": "v1.0.1 - Updated for GD 2.209 / Geode v6.0.0. Improved description, super inputs, misc click bugfixes and performance. v1.0.0 - First release. Click fix, slope fix, dt fix, Hz detect, CFS Adaptive, extrapolate.",
+	"repository": "https://github.com/camiloxdcalabaza/click-super-frames-csf",
+	"issues": {
+		"url": "https://github.com/camiloxdcalabaza/click-super-frames-csf/issues",
+		"info": "Report issues on GitHub. Please include your GD version, Geode version and what happened."
+	},
+	"links": {
+		"community": "https://discord.gg/geode",
+		"homepage": "https://github.com/camiloxdcalabaza/click-super-frames-csf"
+	},
+	"tags": [
+		"gameplay",
+		"performance",
+		"utility"
+	],
+	"dependencies": {
+		"geode.node-ids": {
+			"version": "v1.24.0",
+			"importance": "required"
+		}
+	},
+	"resources": {
+		"sprites": []
+	},
+	"settings": {},
+	"early-load": false,
+	"api": {}
 }
