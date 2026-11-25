@@ -1,11 +1,9 @@
-{
-  "geode": "6.0.0",
-  "gd": {
-    "win": "2.209",
-    "android": "2.209",
-    "mac": "2.209",
-    "ios": "2.209"
-  },
+"gd": {
+    "win": "2.2091",
+    "android": "2.2091",
+    "mac": "2.2091",
+    "ios": "2.2091"
+}
   "version": "v1.0.1",
   "id": "camiloxdcalabaza.click-super-frames",
   "name": "Click Super Frames",
