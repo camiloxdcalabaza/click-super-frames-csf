@@ -26,5 +26,5 @@ jobs:
         if: success()
         with:
           name: CFS-Perfect-FPS
-          path: "**/*.geode"
+          path: "build/**/*.geode"
           if-no-files-found: error
