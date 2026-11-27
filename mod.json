@@ -1,10 +1,7 @@
 {
   "geode": "6.0.0",
   "gd": {
-    "win": "2.2091",
-    "android": "2.2091",
-    "mac": "2.2091",
-    "ios": "2.2091"
+    "windows": "2.2091"
   },
   "version": "v1.0.1",
   "id": "camiloxdcalabaza.click-super-frames",
