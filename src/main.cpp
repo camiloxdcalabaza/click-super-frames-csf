@@ -1,6 +1,7 @@
 #include <Geode/Geode.hpp>
 #include <queue>
 #include <chrono>
+#include <string>
 
 using namespace geode::prelude;
 
@@ -127,22 +128,22 @@ class $modify(PlayLayer) {
                     clicksSeg++;
                 }
 
-                // OJO: aca va PlayLayer::, no this->
-                // this->pushButton llama a MI pushButton y me vuelve
-                // a meter el click en la cola, loop infinito
+                // FIX: va GJBaseGameLayer::, no PlayLayer::
+                // PlayLayer no tiene pushButton/releaseButton, los tiene la base.
+                // Y el 2do param es player2, no down. false = jugador 1.
                 if (c.abajo) {
                     if (sosteniendo) {
                         apretadoPendiente = sosteniendo;
                         continue;
                     }
-                    PlayLayer::pushButton(c.boton, true);
+                    GJBaseGameLayer::pushButton(c.boton, false);
                     sosteniendo = true;
                 } else {
                     if (!sosteniendo) {
                         apretadoPendiente = false;
                         continue;
                     }
-                    PlayLayer::releaseButton(c.boton, true);
+                    GJBaseGameLayer::releaseButton(c.boton, false);
                     sosteniendo = false;
                 }
                 // despues de aplicar, pendiente = lo que quedo
@@ -154,19 +155,18 @@ class $modify(PlayLayer) {
         PlayLayer::update(dt);
     }
 
-    void pushButton(int id, bool down) {
+    void pushButton(int id, bool player2) {
         std::string m = modo();
 
         if (m == "off" || id != 0) {
-            PlayLayer::pushButton(id, down);
+            GJBaseGameLayer::pushButton(id, player2);
             return;
         }
 
         double t = ahora();
 
-        // aca NO uso 'down' para saber el estado.
+        // aca NO uso 'player2' para saber el estado.
         // en pushButton, el estado siempre es abajo = true.
-        // el 'down' que manda el juego no es apretado/soltado.
         if (!primerClick && ultimoEstado == true && t - ultimoReal < 0.003) {
             return; // apretar-apretar en <3ms = mouse berreta
         }
@@ -186,11 +186,11 @@ class $modify(PlayLayer) {
         cola.push({true, t, id});
     }
 
-    void releaseButton(int id, bool down) {
+    void releaseButton(int id, bool player2) {
         std::string m = modo();
 
         if (m == "off" || id != 0) {
-            PlayLayer::releaseButton(id, down);
+            GJBaseGameLayer::releaseButton(id, player2);
             return;
         }
 
