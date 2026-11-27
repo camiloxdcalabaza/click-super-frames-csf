@@ -1,7 +1,7 @@
 {
   "geode": "6.0.0",
   "gd": {
-    "windows": "2.2091"
+    "win": "2.2091"
   },
   "version": "v1.0.1",
   "id": "camiloxdcalabaza.click-super-frames",
@@ -15,7 +15,7 @@
   "tags": ["gameplay", "performance"],
   "dependencies": {
     "geode.node-ids": {
-      "version": "v1.24.0",
+      "version": ">=v1.24.0-beta.1",
       "importance": "required"
     }
   },
