@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.21)
-project(ClickSuperFrames VERSION 1.0.1)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-# La action de Geode ya instala el SDK y deja GEODE_SDK seteado.
-# NO usar FetchContent / CPM aca, porque pisa / duplica el SDK.
-if(NOT DEFINED ENV{GEODE_SDK})
-    message(FATAL_ERROR "No se encontro GEODE_SDK. Compila con 'geode build' o con la action build-geode-mod.")
+if (IOS)
+    set(CMAKE_OSX_ARCHITECTURES arm64)
+elseif (APPLE)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
 endif()
 
-# En Geode 6 el archivo esta en cmake/Geode.cmake dentro del SDK
-include($ENV{GEODE_SDK}/cmake/Geode.cmake)
+project(click-super-frames VERSION 1.0.1)
 
-add_library(${PROJECT_NAME} SHARED
-    src/main.cpp
-)
+add_library(${PROJECT_NAME} SHARED src/main.cpp)
 
-# Esto es lo que crea el .geode, linkea bindings, etc.
+if (NOT DEFINED ENV{GEODE_SDK})
+    message(FATAL_ERROR "GEODE_SDK no definido, la action de Geode lo tiene que poner sola")
+endif()
+
+add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
+
 setup_geode_mod(${PROJECT_NAME})
