@@ -1,21 +1,23 @@
 cmake_minimum_required(VERSION 3.21)
 project(CFSPerfectFPS VERSION 1.0.0)
 
-if(NOT DEFINED ENV{GEODE_SDK})
-    message(FATAL_ERROR "GEODE_SDK no esta definido")
-endif()
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# ESTA ES LA LINEA QUE TE FALTA, VA ANTES DE setup_geode_mod
-include($ENV{GEODE_SDK}/cmake/Geode.cmake)
+# Esta es la parte que estaba mal:
+if(DEFINED ENV{GEODE_SDK})
+    include($ENV{GEODE_SDK}/cmake/Geode.cmake)
+else()
+    # Fallback por si lo compilás a mano con el SDK clonado al lado
+    include(${CMAKE_CURRENT_SOURCE_DIR}/../geode-sdk/cmake/Geode.cmake)
+endif()
 
 add_library(${PROJECT_NAME} SHARED
     src/main.cpp
 )
 
-if(NOT DEFINED CMAKE_CXX_VISIBILITY_PRESET)
-  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+if(NOT DEFINED ENV{GEODE_SDK})
+    message(FATAL_ERROR "GEODE_SDK no está seteado")
 endif()
-
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 
 setup_geode_mod(${PROJECT_NAME})
